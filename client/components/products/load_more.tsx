@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import ProductCard from "@/components/products/product_card";
 import type { Product } from "@/lib/types/product";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { currentProducts, currentProductsFilter, setProduct } from "@/lib/redux/features/utils";
 
 const LIMIT = 20;
 
@@ -20,55 +22,102 @@ const getProducts = async (offset: number): Promise<Product[]> => {
 };
 
 const LoadMore = ({ initialOffset }: { initialOffset: number }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+
+  const dispatch = useAppDispatch();
+  const products :Product[] = useAppSelector(currentProducts);
+
+  // const [products, setProducts] = useState<Product[]>([]);
   const [offset, setOffset] = useState(initialOffset);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+    const filter = useAppSelector(currentProductsFilter);
+
+    const isFilterActive =
+      !!filter &&
+      (
+        filter.search.trim() !== "" ||
+        filter.minPrice !== 0 ||
+        filter.maxPrice !== 0 ||
+        filter.category !== ""
+      );
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+  if (
+    loading ||
+    !hasMore ||
+    isFilterActive
+  ) {
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const newProducts = await getProducts(offset);
+  setLoading(true);
 
-      if (newProducts.length === 0) {
-        setHasMore(false);
-      } else {
-        setProducts((prev) => [...prev, ...newProducts]);
-        setOffset((prev) => prev + LIMIT);
-      }
-    } finally {
-      setLoading(false);
+  try {
+    const newProducts = await getProducts(offset);
+
+    if (newProducts.length === 0) {
+      setHasMore(false);
+      return;
     }
-  }, [offset, loading, hasMore]);
 
-  useEffect(() => {
-    if (observerRef.current) observerRef.current.disconnect();
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore();
-        }
-      },
-      { rootMargin: "200px" }
+    dispatch(
+      setProduct([
+        ...products,
+        ...newProducts,
+      ])
     );
 
-    if (sentinelRef.current) {
-      observerRef.current.observe(sentinelRef.current);
+    setOffset((prev) => prev + LIMIT);
+  } finally {
+    setLoading(false);
+  }
+}, [
+  loading,
+  hasMore,
+  isFilterActive,
+  offset,
+  products,
+  dispatch,
+]);
+
+  useEffect(() => {
+  // Always disconnect existing observer first
+  observerRef.current?.disconnect();
+
+  // Don't create an observer while filtering
+  if (isFilterActive) {
+    return;
+  }
+
+  observerRef.current = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        loadMore();
+      }
+    },
+    {
+      rootMargin: "200px",
     }
+  );
 
-    return () => observerRef.current?.disconnect();
-  }, [loadMore]);
+  if (sentinelRef.current) {
+    observerRef.current.observe(
+      sentinelRef.current
+    );
+  }
 
+  return () => {
+    observerRef.current?.disconnect();
+  };
+}, [isFilterActive, loadMore]);
   return (
     <>
-      {products.map((product: Product) => (
-        <ProductCard key={product.id} product={product} />
+      {products.map((product: Product, index:number) => (
+        <ProductCard key={product.id+index} product={product} />
       ))}
 
       {/* sentinel + loading state */}
