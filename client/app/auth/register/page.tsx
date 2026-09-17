@@ -1,31 +1,33 @@
 "use client";
 
-import AuthLayout, {AUTH_ACCENT} from "../layout";
-import RegisterForm, {type RegisterFormValues} from "@/components/auth/register_form";
+import { currentIsLoggedIn } from "@/lib/redux/features/auth";
+import AuthShell, { AUTH_ACCENT } from "../_shell";
+import RegisterForm from "@/components/auth/register_form";
+import { useAppSelector } from "@/lib/redux/hooks";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function RegisterPage() {
-  async function handleRegister(values: RegisterFormValues) {
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    if (!res.ok) throw new Error("Couldn't create your account. Try again.");
-  }
+  const router = useRouter();
+  const isLoggedIn = useAppSelector(currentIsLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn) router.push("/checkout");
+  }, [isLoggedIn]);
 
   return (
-    <AuthLayout
-      title="Create your account"
+    <AuthShell
+      title="Create an account"
       subtitle={
         <>
-          Already have one?{" "}
+          Already have an account?{" "}
           <a href="/auth/login" className="font-medium underline underline-offset-2" style={{ color: AUTH_ACCENT }}>
             Sign in
           </a>
         </>
       }
     >
-      <RegisterForm onSubmit={handleRegister} />
-    </AuthLayout>
+      <RegisterForm />
+    </AuthShell>
   );
 }

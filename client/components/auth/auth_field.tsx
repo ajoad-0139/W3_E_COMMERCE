@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
-import { AUTH_INK } from "@/app/auth/layout";
+import { AUTH_INK } from "@/app/auth/_shell";
 
 interface AuthFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;

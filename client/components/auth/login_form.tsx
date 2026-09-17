@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import AuthField from "./auth_field";
-import { AUTH_ACCENT, AUTH_ACCENT_HOVER } from "@/app/auth/layout";
+import { AUTH_ACCENT, AUTH_ACCENT_HOVER } from "@/app/auth/_shell";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { loginUser } from "@/lib/redux/features/auth";
 
@@ -39,7 +39,7 @@ function validate(values: LoginFormValues): FieldErrors {
 const EMPTY_VALUES: LoginFormValues = { email: "", password: "", remember: false };
 
 export default function LoginForm({ onSubmit }: LoginFormProps) {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [values, setValues] = useState<LoginFormValues>(EMPTY_VALUES);
   const [touched, setTouched] = useState<Partial<Record<"email" | "password", boolean>>>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -68,8 +68,8 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
 
     try {
       setSubmitting(true);
-      await dispatch(loginUser(values))
-    //   if (onSubmit) await onSubmit(values);
+      await dispatch(loginUser(values));
+      // if (onSubmit) await onSubmit(values);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Couldn't sign you in. Check your details and try again.");
     } finally {
