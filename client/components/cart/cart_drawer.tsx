@@ -6,6 +6,7 @@ import {
   currentCartProducts,
   currentIsOpenCart,
   setCartProducts,
+  toggleIsOpenCart,
 } from "@/lib/redux/features/cart";
 
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -16,6 +17,7 @@ import CartItem from "./cart_item";
 import CartSummary from "./cart_summary";
 
 import type { Product } from "@/lib/types/product";
+import { X } from "lucide-react";
 
 export default function CartDrawer() {
   const dispatch = useAppDispatch();
@@ -70,26 +72,6 @@ export default function CartDrawer() {
     loadCartProducts();
   }, [isOpen]);
 
-  useEffect(() => {
-    const handleCartUpdated = () => {
-      if (isOpen) {
-        loadCartProducts();
-      }
-    };
-
-    window.addEventListener(
-      "cart-updated",
-      handleCartUpdated
-    );
-
-    return () => {
-      window.removeEventListener(
-        "cart-updated",
-        handleCartUpdated
-      );
-    };
-  }, [isOpen]);
-
   const subtotal = useMemo(() => {
     return products.reduce(
       (total, product) => total + product.price,
@@ -105,8 +87,10 @@ export default function CartDrawer() {
         right-0
         top-0
         h-full
-        w-[500px]
-        max-w-[90vw]
+        w-full
+        sm:w-[500px]
+        max-w-full
+        sm:max-w-[90vw]
         bg-background
         shadow-xl
 
@@ -126,11 +110,14 @@ export default function CartDrawer() {
       `}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b">
         <div>
-          <h2 className="text-lg font-semibold">
-            Your Cart
-          </h2>
+            <button onClick={()=>dispatch(toggleIsOpenCart())} className="fixed top-5 right-5 cursor-pointer">
+              <X className="text-red-600 font-extrabold"/>
+            </button>
+            <h2 className="text-base sm:text-lg font-semibold">
+              Your Cart
+            </h2>
 
           <p className="text-xs text-muted-foreground mt-1">
             {products.length}{" "}
@@ -140,7 +127,7 @@ export default function CartDrawer() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-6">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <p className="text-sm text-muted-foreground">

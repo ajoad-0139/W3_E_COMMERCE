@@ -50,7 +50,7 @@ const isValidCategory = (category: string): boolean => {
   return category.length <= 15;
 };
 
-const ProductFilters = () => {
+const ProductFilters = ({ onApplied }: { onApplied?: () => void }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const sort = useAppSelector(currentSort);
@@ -129,10 +129,10 @@ const ProductFilters = () => {
           search: debouncedSearch.trim(),
           minPrice: minPrice
             ? Number(minPrice)
-            : undefined,
+            : 0,
           maxPrice: maxPrice
             ? Number(maxPrice)
-            : undefined,
+            : Number.MAX_SAFE_INTEGER,
           category: selectedCategory,
         })
       );
@@ -140,6 +140,8 @@ const ProductFilters = () => {
       // Keep products in their original order.
       // ProductList handles sorting for display.
       dispatch(setProduct(products));
+
+      onApplied?.();
     } catch (error) {
       console.error("Failed to apply filters:", error);
     } finally {
@@ -159,7 +161,7 @@ const ProductFilters = () => {
   };
 
   return (
-    <div className="w-[300px] shrink-0 rounded-xl border bg-card text-card-foreground p-5 flex flex-col gap-6 h-fit">
+    <div className="w-full shrink-0 rounded-xl border bg-card text-card-foreground p-5 flex flex-col gap-6 h-fit">
 
       {/* Header */}
       <div className="flex items-center justify-between">

@@ -8,7 +8,7 @@ import { StaticImageData } from "next/image"
 const CategoryCard = ({category}:{category:Category}) => {
     const [imgSrc, setImgSrc] = useState<string | StaticImageData>(category.image)
   return (
-    <div key={category.id} className="w-[300px] h-[300px] relative">
+    <div key={category.id} className="w-full h-full aspect-square lg:w-[300px] lg:h-[300px] relative">
         <Image
             src={imgSrc}
             loading="eager"
@@ -19,8 +19,8 @@ const CategoryCard = ({category}:{category:Category}) => {
             preload={true}
             onError={()=>{setImgSrc(fallbackImgSrc)}}
         />
-        <div className="absolute inset-0 bg-black/5 rounded-md flex items-end justify-start p-6">
-            <p className="text-lg text-secondary-foreground font-semibold">{category?.name?category.name:'missing category name'}</p>
+        <div className="absolute inset-0 bg-black/5 rounded-md flex items-end justify-start p-3 sm:p-4 lg:p-6">
+            <p className="text-sm sm:text-base lg:text-lg text-secondary-foreground font-semibold">{category?.name?category.name:'missing category name'}</p>
         </div>
     </div>
   )

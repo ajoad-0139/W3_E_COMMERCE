@@ -28,6 +28,11 @@ const cartSlice = createSlice({
     clearCartProducts: (state) => {
       state.products = [];
     },
+    removeCartProduct: (state, action: PayloadAction<string>) => {
+      state.products = state.products.filter(
+        (product) => String(product.id) !== action.payload
+      );
+    },
   },
 });
 
@@ -37,6 +42,7 @@ export const {
   toggleIsOpenCart,
   setCartProducts,
   clearCartProducts,
+  removeCartProduct
 } = cartSlice.actions;
 
 export const currentIsOpenCart = (state: RootState) =>

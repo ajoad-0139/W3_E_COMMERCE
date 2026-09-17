@@ -16,9 +16,9 @@ const getCetegories = async () =>{
 const Category = async() => {
     const categories = await getCetegories();
   return (
-    <section className="w-full h-[700px] bg-[#1a7e3b] mt-12 rounded-xl flex items-center justify-center">
-        <div className="flex-3 flex items-center justify-end ">
-            <div className="h-[610px] w-[610px] grid grid-cols-2 gap-2 overflow-hidden">
+    <section id="category-section" className="w-full h-auto lg:h-[700px] bg-[#1a7e3b] mt-4 rounded-xl flex flex-col-reverse lg:flex-row items-center justify-center py-8 lg:py-0 px-4 lg:px-0 gap-6 lg:gap-0">
+        <div className="w-full lg:flex-3 flex items-center justify-center lg:justify-end">
+            <div className="w-full max-w-[500px] h-auto aspect-square sm:max-w-[610px] lg:w-[610px] lg:h-[610px] grid grid-cols-2 gap-2 overflow-hidden">
                 {
                     categories?.length?
                         categories.map((category: Category, index: number) =>
@@ -28,9 +28,9 @@ const Category = async() => {
                 }
             </div>
         </div>
-        <div className="flex-2 min-w-0 text-white h-full flex pl-[10%] flex-col items-start justify-center">
-            <h1 className="text-3xl font-bold">Product Categories</h1>
-            <p className="max-w-[60%]">Take a look at some inspiring tips and ideas to make play, study and work spaces really work for everyone in the family – big or small!</p>
+        <div className="w-full lg:flex-2 min-w-0 text-white h-auto lg:h-full flex px-4 sm:px-8 lg:pl-[10%] lg:pr-0 flex-col items-start justify-center text-center lg:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold mx-auto lg:mx-0">Product Categories</h1>
+            <p className="max-w-full sm:max-w-[80%] lg:max-w-[60%] mt-2 lg:mt-0 mx-auto lg:mx-0">Take a look at some inspiring tips and ideas to make play, study and work spaces really work for everyone in the family – big or small!</p>
         </div>
     </section>
   )

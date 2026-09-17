@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { Product } from "@/lib/types/product";
 import { removeProductFromCart } from "./cart_storage";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { removeCartProduct } from "@/lib/redux/features/cart";
 
 type CartItemProps = {
   product: Product;
@@ -11,14 +13,18 @@ type CartItemProps = {
 export default function CartItem({
   product,
 }: CartItemProps) {
+
+  const dispatch = useAppDispatch();
+
   const handleRemove = () => {
     removeProductFromCart(String(product.id));
+    dispatch(removeCartProduct(String(product.id)))
   };
 
   return (
-    <div className="flex gap-4 py-4 border-b">
+    <div className="flex gap-3 sm:gap-4 py-4 border-b">
       {/* Image */}
-      <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-md bg-muted">
+      <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 overflow-hidden rounded-md bg-muted">
         <Image
           src={product.images?.[0] ?? "/placeholder.png"}
           alt={product.title}

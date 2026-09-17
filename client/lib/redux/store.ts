@@ -2,13 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import utilsReducer from "./features/utils";
 import cartReducer from "./features/cart";
 import authReducer from "./features/auth";
+import themeReducer from "./features/theme";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
         utils:utilsReducer,
         cart:cartReducer,
-        auth:authReducer
+        auth:authReducer,
+        theme:themeReducer
     },
   });
 };
